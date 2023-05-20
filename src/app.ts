@@ -4,7 +4,7 @@ import { config as dotenvConfig } from 'dotenv';
 import initRoutes from './routes';
 
 // Reading config.env
-// Ensure declare before using all enviroment variable
+// Ensure config before using all enviroment variable
 const dotenvConfigOutput = dotenvConfig({ path: `${__dirname}/../config.env` });
 if (!dotenvConfigOutput.parsed) throw new Error("Dotenv don't get enviroment variable!");
 

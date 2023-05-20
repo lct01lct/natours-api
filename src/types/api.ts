@@ -14,3 +14,13 @@ export type FR<T extends FROptions = FROptionsDefault> = (
   res: Response<T['res']>,
   next?: NextFunction
 ) => void;
+
+export type Res<Data = never, Message = string> =
+  | {
+      status: 'success';
+      data: Data;
+    }
+  | {
+      status: 'fail';
+      message: Message;
+    };
