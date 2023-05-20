@@ -1,23 +1,23 @@
 import type { FR } from '../types';
 
 const getAllUsers: FR = (req, res) => {
-  res.send('Done');
+  res.send();
 };
 
 const getUser: FR = (req, res) => {
-  res.send('Done');
+  res.send();
 };
 
 const createUser: FR = (req, res) => {
-  res.send('Done');
+  res.send();
 };
 
 const updateUser: FR = (req, res) => {
-  res.send('Done');
+  res.send();
 };
 
 const deleteUser: FR = (req, res) => {
-  res.send('Done');
+  res.send();
 };
 
 export { getAllUsers, getUser, createUser, updateUser, deleteUser };
