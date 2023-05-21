@@ -6,25 +6,22 @@ type BaseRes = {
 };
 
 export type GetAllToursApi = {
-  res: Res<
-    {
-      results: number;
-      tours: Tour[];
-    },
-    string
-  >;
+  res: Res<{
+    results: number;
+    tours: Tour[];
+  }>;
 };
 
 export type CreateTourApi = {
   body: Tour;
-  res: Res<BaseRes, string>;
+  res: Res<BaseRes>;
 };
 
 export type GetTourApi = {
   params: {
     id: string;
   };
-  res: Res<BaseRes, string>;
+  res: Res<BaseRes>;
 };
 
 export type UpdateTourApi = {
@@ -32,12 +29,12 @@ export type UpdateTourApi = {
     id: string;
   };
   body: Partial<Tour>;
-  res: Res<BaseRes, string>;
+  res: Res<BaseRes>;
 };
 
 export type DeteleTourApi = {
   params: {
     id: string;
   };
-  res: Res<null, string>;
+  res: Res<null>;
 };

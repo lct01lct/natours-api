@@ -11,6 +11,7 @@ specifiers:
   mongoose: '7'
   morgan: ^1.10.0
   ts-node-dev: ^2.0.0
+  tsconfig-paths: ^4.2.0
   typescript: ^5.0.4
 
 dependencies:
@@ -26,6 +27,7 @@ devDependencies:
   '@types/node': 20.1.5
   '@typescript-eslint/parser': 5.59.6_typescript@5.0.4
   ts-node-dev: 2.0.0_idl4vv3fut2v7dzemay7ayukdm
+  tsconfig-paths: 4.2.0
   typescript: 5.0.4
 
 packages:
@@ -714,6 +716,12 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
+  /json5/2.2.3:
+    resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
+    engines: {node: '>=6'}
+    hasBin: true
+    dev: true
+
   /kareem/2.5.1:
     resolution: {integrity: sha512-7jFxRVm+jD+rkq3kY0iZDJfsO2/t4BBPeEb2qKn2lR/9KhuksYk5hxzfRYWMPV8P/x2d0kHD306YyWLzjjH+uA==}
     engines: {node: '>=12.0.0'}
@@ -1237,6 +1245,15 @@ packages:
       typescript: 5.0.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
+
+  /tsconfig-paths/4.2.0:
+    resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
+    engines: {node: '>=6'}
+    dependencies:
+      json5: 2.2.3
+      minimist: 1.2.8
+      strip-bom: 3.0.0
     dev: true
 
   /tsconfig/7.0.0:

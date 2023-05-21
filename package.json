@@ -4,7 +4,10 @@
   "description": "",
   "main": "./server.ts",
   "scripts": {
-    "dev": "tsnd src/server.ts",
+    "dev": "tsnd -r tsconfig-paths/register src/server.ts --files",
+    "data": "tsnd -r tsconfig-paths/register src/dev-data/data/import-dev-data.ts --files",
+    "import-data": "pnpm data  --import",
+    "delete-data": "pnpm data --delete ",
     "build": "tsc"
   },
   "keywords": [],
@@ -14,6 +17,7 @@
     "@types/node": "^20.1.5",
     "@typescript-eslint/parser": "^5.59.6",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
