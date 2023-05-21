@@ -128,3 +128,10 @@ export const deleteTour: FR<DeteleTourApi> = async (req, res) => {
     });
   }
 };
+
+export const aliasTopTours: FR<GetAllToursApi> = async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingAverage,price';
+  req.query.fields = 'name,pirce,ratingAverage,summary,difficulty';
+  next();
+};
