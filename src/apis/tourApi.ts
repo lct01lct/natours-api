@@ -1,4 +1,4 @@
-import type { Res } from '../types';
+import type { Res, LimitFields } from '../types';
 import type { Tour } from '../models/';
 
 type BaseRes = {
@@ -6,6 +6,7 @@ type BaseRes = {
 };
 
 export type GetAllToursApi = {
+  query: LimitFields & Partial<Tour>;
   res: Res<{
     results: number;
     tours: Tour[];

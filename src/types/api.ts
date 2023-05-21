@@ -24,3 +24,6 @@ export type Res<Data = never, Message = string> =
       status: 'fail';
       message: Message;
     };
+
+export const LIMIT_FIELDS = ['page', 'sort', 'limit', 'fields'] as const;
+export type LimitFields = Partial<Record<(typeof LIMIT_FIELDS)[number], string>>;
