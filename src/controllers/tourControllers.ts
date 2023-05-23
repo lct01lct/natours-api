@@ -6,6 +6,8 @@ import type {
   GetTourApi,
   UpdateTourApi,
   DeteleTourApi,
+  GetTourStats,
+  GetMonthlyPlan,
 } from '../apis';
 
 import { APIFeatures } from '@/utils';
@@ -38,7 +40,6 @@ export const getAllTours: FR<GetAllToursApi> = async (req, res) => {
 export const getTour: FR<GetTourApi> = async (req, res) => {
   try {
     const tour = await TourModel.findById(req.params.id);
-
     res.status(200).json({
       status: 'success',
       data: { tour },
@@ -107,7 +108,98 @@ export const deleteTour: FR<DeteleTourApi> = async (req, res) => {
 
 export const aliasTopTours: FR<GetAllToursApi> = async (req, res, next) => {
   req.query.limit = '5';
-  req.query.sort = '-ratingAverage,price';
-  req.query.fields = 'name,pirce,ratingAverage,summary,difficulty';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,pirce,ratingsAverage,summary,difficulty';
   next();
+};
+
+export const getTourStats: FR<GetTourStats> = async (req, res) => {
+  try {
+    const stats = await TourModel.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          numTours: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+        },
+      },
+      {
+        $sort: {
+          avgPrice: 1,
+        },
+      },
+      // {
+      //   $match: {
+      //     _id: { $ne: 'EASY' },
+      //   },
+      // },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+export const getMonthlyPlan: FR<GetMonthlyPlan> = async (req, res) => {
+  try {
+    const year = Number(req.params.year);
+    console.log('controllers', req.params);
+    const plan = await TourModel.aggregate([
+      // unconstruct by startDates
+      { $unwind: '$startDates' },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numToursStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $project: { _id: 0 }, // delete _id
+      },
+      {
+        $sort: { numToursStarts: -1 },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: { results: plan?.length ?? 0, plan },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };

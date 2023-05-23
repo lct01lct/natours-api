@@ -39,3 +39,19 @@ export type DeteleTourApi = {
   };
   res: Res<null>;
 };
+
+export type GetTourStats = {
+  res: Res<{
+    stats: any[];
+  }>;
+};
+
+export type GetMonthlyPlan = {
+  params: {
+    year: string;
+  };
+  res: Res<{
+    results: number;
+    plan: any[];
+  }>;
+};
