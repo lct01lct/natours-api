@@ -73,8 +73,8 @@ export const createTour: FR<CreateTourApi> = async (req, res) => {
 export const updateTour: FR<UpdateTourApi> = async (req, res) => {
   try {
     const newTour = await TourModel.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+      new: true, // return the modified data rather than original
+      runValidators: true, // from model
     });
 
     res.status(200).json({

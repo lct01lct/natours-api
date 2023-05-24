@@ -4,12 +4,12 @@ import mongoose from 'mongoose';
 import '@/app'; // config env
 import { TourModel } from '@/models';
 import { Tour } from '@/models';
-import { greenLog, redLog } from '@/utils';
+import { logger } from '@/utils';
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 mongoose.connect(DB).then(() => {
-  greenLog('DB connection successful!');
+  logger.success('DB connection successful!');
 });
 
 const tours: Tour[] = JSON.parse(readFileSync(join(__dirname, '/tours-simple.json'), 'utf-8'));
@@ -17,18 +17,18 @@ const tours: Tour[] = JSON.parse(readFileSync(join(__dirname, '/tours-simple.jso
 const importData = async () => {
   try {
     await TourModel.create(tours);
-    greenLog('Data successfully loaded!');
+    logger.success('Data successfully loaded!');
   } catch (err) {
-    redLog(err);
+    logger.error(err);
   }
 };
 
 const deleteData = async () => {
   try {
     await TourModel.deleteMany();
-    greenLog('Data successfully deleted!');
+    logger.success('Data successfully deleted!');
   } catch (err) {
-    redLog(err);
+    logger.error(err);
   }
 };
 
