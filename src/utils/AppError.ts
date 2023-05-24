@@ -1,5 +1,5 @@
 class AppError extends Error {
-  private _isOperational = true;
+  public isOperational = true;
   public status: string;
 
   constructor(_message: string, public statusCode: number) {

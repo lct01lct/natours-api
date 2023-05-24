@@ -122,7 +122,7 @@ export const getTourStats = catchAsync<GetTourStats>(async (req, res) => {
 
 export const getMonthlyPlan = catchAsync<GetMonthlyPlan>(async (req, res) => {
   const year = Number(req.params.year);
-  console.log('controllers', req.params);
+
   const plan = await TourModel.aggregate([
     // unconstruct by startDates
     { $unwind: '$startDates' },

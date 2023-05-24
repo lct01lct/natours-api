@@ -1,9 +1,9 @@
-export const errorLog = (str: string) => {
-  console.log('\x1B[31m%s\x1B[0m', str);
+export const errorLog = (...strs: any[]) => {
+  console.log(`\x1B[31m${strs.join(' ')}\x1B[0m`);
 };
 
-export const successLog = (str: string) => {
-  console.log('\x1B[32m%s\x1B[0m', str);
+export const successLog = (...strs: any[]) => {
+  console.log(`\x1B[32m${strs.join(' ')}\x1B[0m`);
 };
 
 export const logger = {
