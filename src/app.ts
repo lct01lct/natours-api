@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { config as dotenvConfig } from 'dotenv';
 import initRoutes from './routes';
+import { errorHandler } from './middleware';
 
 // Reading config.env
 // Ensure config before using all enviroment variable
@@ -18,5 +19,7 @@ app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
 initRoutes(app);
+
+app.use(errorHandler);
 
 export default app;

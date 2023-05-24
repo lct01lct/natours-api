@@ -60,7 +60,7 @@ const tourSchema = new Schema<Tour>(
     priceDiscount: {
       type: Number,
       validate: {
-        validator: function (val) {
+        validator: function (val: number) {
           console.log(typeof val, typeof this.price);
           return Number(val) < Number(this.price);
         },
