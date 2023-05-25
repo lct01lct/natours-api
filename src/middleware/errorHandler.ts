@@ -11,7 +11,7 @@ export const errorHandler = (err: AppError, req: FR_Req, res: FR_Res<null>, next
   if ((process.env.NODE_ENV = 'development')) {
     sendErrorDev(err, res);
   } else {
-    let _err: any = { ...err };
+    let _err: any = err;
     let error: AppError;
 
     if (_err.name === 'CastError') error = handleCastErrorDB(_err);
