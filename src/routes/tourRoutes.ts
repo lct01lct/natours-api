@@ -9,6 +9,7 @@ import {
   getTourStats,
   getMonthlyPlan,
 } from '../controllers';
+import { protect } from '@/controllers/authControllers';
 
 const tourRouter = Router();
 // tourRouter.param('id', checkId);
@@ -16,7 +17,7 @@ const tourRouter = Router();
 tourRouter.route('/tour-stats').get(getTourStats);
 tourRouter.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 tourRouter.route('/monthly-plan/:year').get(getMonthlyPlan);
-tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/').get(protect, getAllTours).post(createTour);
 tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
 export default tourRouter;

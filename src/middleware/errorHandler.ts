@@ -8,7 +8,7 @@ export const errorHandler = (err: AppError, req: FR_Req, res: FR_Res<null>, next
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if ((process.env.NODE_ENV = 'development')) {
+  if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } else {
     let _err: any = err;
@@ -17,6 +17,7 @@ export const errorHandler = (err: AppError, req: FR_Req, res: FR_Res<null>, next
     if (_err.name === 'CastError') error = handleCastErrorDB(_err);
     if (_err.code === 11000) error = handleDuplicateErrorDB(_err);
     if (_err.name === 'ValidationError') error = handleValidationErrorDB(_err);
+    if (_err.name === 'JsonWebTokenError') error = handleJsonWebTokenError(_err);
 
     sendErrorProd(error, res);
   }
@@ -65,6 +66,10 @@ const handleValidationErrorDB = (err: any) => {
   const errors = Object.values(err.errors).map((el: any) => el.message);
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
+};
+
+const handleJsonWebTokenError = (err: any) => {
+  return new AppError('Invalid token.Please log in again', 401);
 };
 
 export const handleUncaughtExpectionError = () => {

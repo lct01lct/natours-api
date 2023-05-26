@@ -2,12 +2,29 @@ import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
+const correctPassword = async function (candidatePassword: string, userPassword: string) {
+  return bcrypt.compare(userPassword, candidatePassword);
+};
+
+const changedPasswordAfter = function (this: User, JWTTimestamp: number) {
+  if (this.passwordChangedAt) {
+    const changeTimesStamp = parseInt(String(this.passwordChangedAt.getTime()));
+
+    return JWTTimestamp < changeTimesStamp;
+  }
+
+  return false;
+};
+
 export interface User {
   name: string;
   email: string;
   photo?: string;
   password: string;
   passwordConfirm: string;
+  passwordChangedAt: Date;
+  correctPassword?: typeof correctPassword;
+  changedPasswordAfter?: typeof changedPasswordAfter;
 }
 
 const userSchema = new Schema<User>({
@@ -27,6 +44,7 @@ const userSchema = new Schema<User>({
     type: String,
     required: [true, 'Please provide a password'],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -39,6 +57,7 @@ const userSchema = new Schema<User>({
       message: 'Passwords are not the same!',
     },
   },
+  passwordChangedAt: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -51,5 +70,8 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+userSchema.methods.correctPassword = correctPassword;
+userSchema.methods.changedPasswordAfter = changedPasswordAfter;
 
 export const UserModel = model('User', userSchema);

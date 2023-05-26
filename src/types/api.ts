@@ -1,3 +1,4 @@
+import { User } from '@/models';
 import { AppError } from '@/utils';
 import type { Request, Response, NextFunction } from 'express';
 
@@ -8,13 +9,18 @@ export interface FROptions {
   res?: any;
 }
 
+interface ReqExtend {
+  user?: User;
+}
+
 export type FROptionsDefault = Required<Record<keyof FROptions, never>>;
 export type FR_Req<T extends FROptions = FROptionsDefault> = Request<
   T['params'],
   never,
   T['body'],
   T['query']
->;
+> &
+  ReqExtend;
 export type FR_Res<T extends FROptions = FROptionsDefault> = Response<T['res']>;
 
 export type FR<T extends FROptions = FROptionsDefault> = (
