@@ -1,5 +1,6 @@
-import { Schema, Model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 export interface User {
   name: string;
@@ -30,7 +31,25 @@ const userSchema = new Schema<User>({
   passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password'],
+    validate: {
+      // This only works on SAVE!!!
+      validator: function (val: string) {
+        return this.password === val;
+      },
+      message: 'Passwords are not the same!',
+    },
   },
 });
 
-export const User = new Model('User', userSchema);
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // Delete passwordConfirm field
+  this.passwordConfirm = undefined;
+
+  next();
+});
+
+export const UserModel = model('User', userSchema);

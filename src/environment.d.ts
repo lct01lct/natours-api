@@ -8,6 +8,8 @@ declare global {
       DATABASE: string;
       DATABASE_LOCAL: string;
       DATABASE_PASSWORD: string;
+      JWT_SECRET: string;
+      JWT_EXPIRED_IN: string;
     }
   }
 }

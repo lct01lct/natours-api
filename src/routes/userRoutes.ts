@@ -1,9 +1,12 @@
+import { signup } from '@/controllers/authControllers';
 import { getAllUsers, getUser, createUser, updateUser, deleteUser } from '../controllers';
 import { Router } from 'express';
 
-const useRoutes = Router();
+const userRouter = Router();
 
-useRoutes.route('/').get(getAllUsers).post(createUser);
-useRoutes.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+userRouter.post('/signup', signup);
 
-export default useRoutes;
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+export default userRouter;
