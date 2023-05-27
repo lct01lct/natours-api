@@ -1,4 +1,4 @@
-import { UserModel, User } from '@/models';
+import { UserModel, User, Role } from '@/models';
 import { AppError, catchAsync } from '@/utils';
 import { SignupApi, LoginApi, ProtectApi } from '@/apis';
 import jwt from 'jsonwebtoken';
@@ -10,13 +10,14 @@ const signToken = (id: number | Types.ObjectId) =>
   });
 
 export const signup = catchAsync<SignupApi>(async (req, res) => {
-  const { email, password, passwordConfirm, name } = req.body;
+  const { email, password, passwordConfirm, name, role } = req.body;
 
   const newUser = await UserModel.create({
     name,
     email,
     password,
     passwordConfirm,
+    role,
   });
 
   const token = signToken(newUser._id);
@@ -77,3 +78,17 @@ export const protect = catchAsync<ProtectApi>(async (req, res, next) => {
   req.user = freshUser;
   next();
 });
+
+export const restrictTo = (...roles: Role[]) => {
+  return catchAsync(async (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission to perform this action', 403));
+    }
+
+    next();
+  });
+};
+
+export const forgotPassword = catchAsync(async (req, res, next) => {});
+
+export const resetPassword = catchAsync(async (req, res, next) => {});

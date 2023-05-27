@@ -23,9 +23,14 @@ export interface User {
   password: string;
   passwordConfirm: string;
   passwordChangedAt: Date;
+  role: Role;
   correctPassword?: typeof correctPassword;
   changedPasswordAfter?: typeof changedPasswordAfter;
 }
+
+const roles = ['user', 'guide', 'lead-guide', 'admin'] as const;
+
+export type Role = (typeof roles)[number];
 
 const userSchema = new Schema<User>({
   name: {
@@ -40,6 +45,11 @@ const userSchema = new Schema<User>({
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
   photo: String,
+  role: {
+    type: String,
+    enum: roles,
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
