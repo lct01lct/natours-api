@@ -15,12 +15,6 @@ export interface LoginApi {
   res: Res<{ token: string }>;
 }
 
-export interface ProtectApi {
-  body: {
-    token: string;
-  };
-}
-
 export interface ForgotPasswordApi {
   body: {
     email: string;
@@ -40,4 +34,16 @@ export interface ResetPasswordApi {
     token: string;
   };
   res: Res<{}>;
+}
+
+export interface UpdatePasswordApi {
+  body: {
+    passwordCurrent: string;
+    password: string;
+    passwordConfrim: string;
+  };
+  res: Res<{
+    token: string;
+    user: User;
+  }>;
 }

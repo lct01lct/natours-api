@@ -10,7 +10,7 @@ export interface FROptions {
 }
 
 interface ReqExtend {
-  user?: User;
+  user?: User & { _id?: string };
 }
 
 export type FROptionsDefault = Required<Record<keyof FROptions, never>>;

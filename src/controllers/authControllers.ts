@@ -1,9 +1,17 @@
 import { UserModel, User, Role } from '@/models';
 import { AppError, catchAsync, sendEmail } from '@/utils';
-import { SignupApi, LoginApi, ProtectApi, ForgotPasswordApi, ResetPasswordApi } from '@/apis';
+import {
+  SignupApi,
+  LoginApi,
+  ForgotPasswordApi,
+  ResetPasswordApi,
+  UpdatePasswordApi,
+} from '@/apis';
 import jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import type { Types } from 'mongoose';
+import { FR_Res } from '@/types';
+import { Res } from '@/types';
 
 const signToken = (id: number | Types.ObjectId) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -21,15 +29,7 @@ export const signup = catchAsync<SignupApi>(async (req, res) => {
     role,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      user: newUser,
-      token,
-    },
-  });
+  sendToken(newUser, 201, res);
 });
 
 export const login = catchAsync<LoginApi>(async (req, res, next) => {
@@ -53,7 +53,7 @@ export const login = catchAsync<LoginApi>(async (req, res, next) => {
   });
 });
 
-export const protect = catchAsync<ProtectApi>(async (req, res, next) => {
+export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
 
   if (token && token.startsWith('Bearer ')) {
@@ -150,3 +150,39 @@ export const resetPassword = catchAsync<ResetPasswordApi>(async (req, res, next)
     },
   });
 });
+
+export const updatePassword = catchAsync<UpdatePasswordApi>(async (req, res, next) => {
+  const { passwordCurrent, password, passwordConfrim } = req.body;
+  const user = await UserModel.findById(req.user._id).select('+password');
+  const isCorrectPassword = user.correctPassword(passwordCurrent, user.password);
+
+  if (!isCorrectPassword) {
+    return next(new AppError('Your current password is wrong', 401));
+  }
+
+  user.password = password;
+  user.passwordConfirm = passwordConfrim;
+
+  await user.save();
+
+  sendToken(user, 200, res);
+});
+
+function sendToken<
+  _Res extends FR_Res<{
+    res: Res<{
+      token: string;
+      user: User;
+    }>;
+  }>
+>(user: User, statusCode: number, res: _Res) {
+  const token = signToken((user as any)._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    data: {
+      token,
+      user,
+    },
+  });
+}
