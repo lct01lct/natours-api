@@ -36,6 +36,7 @@ export interface User {
   role: Role;
   passwordResetToken: string;
   passwordResetExpires: Date;
+  active: boolean;
   correctPassword?: typeof correctPassword;
   changedPasswordAfter?: typeof changedPasswordAfter;
   createPasswordResetToken?: typeof createPasswordResetToken;
@@ -83,6 +84,11 @@ const userSchema = new Schema<User>({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -107,6 +113,12 @@ userSchema.pre('save', function (next) {
   if (this.isNew) return next();
 
   this.passwordChangedAt = new Date(Date.now() - 1000);
+
+  next();
+});
+
+userSchema.pre('find', function (next) {
+  this.find({ active: { $ne: false } });
 
   next();
 });

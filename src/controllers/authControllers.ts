@@ -67,7 +67,7 @@ export const protect = catchAsync(async (req, res, next) => {
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
   if (typeof decoded === 'string') return next(new AppError('Jwt parse went wrong!', 401));
-  const freshUser = await UserModel.findById<User>(decoded.id);
+  const freshUser = await UserModel.findById(decoded.id);
 
   if (!freshUser)
     return next(new AppError('The user belonging to this token does no longer exist.', 401));
@@ -76,7 +76,7 @@ export const protect = catchAsync(async (req, res, next) => {
 
   if (isChangePassword) return next(new AppError('User recently changed password!', 401));
 
-  req.user = freshUser;
+  req.user = freshUser as any;
   next();
 });
 
@@ -177,6 +177,13 @@ function sendToken<
   }>
 >(user: User, statusCode: number, res: _Res) {
   const token = signToken((user as any)._id);
+  res.cookie('jwt', token, {
+    expires: new Date(Date.now() + Number(process.env.JWT_COOKIE_EXPIRED_IN) * 24 * 60 * 60 * 1000),
+    secure: process.env.NODE_ENV === 'production', // https
+    httpOnly: true,
+  });
+
+  user.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',

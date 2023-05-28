@@ -20,3 +20,7 @@ export interface UpdateUserApi {
     user: User;
   }>;
 }
+
+export interface DeleteUserApi {
+  res: Res<{}>;
+}

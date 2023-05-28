@@ -17,7 +17,12 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', protect, resetPassword);
 userRouter.patch('/updatePassword', protect, updatePassword);
 
-userRouter.route('/').get(getAllUsers).post(createUser).patch(protect, updateUser);
-userRouter.route('/:id').get(getUser).delete(deleteUser);
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser)
+  .patch(protect, updateUser)
+  .delete(protect, deleteUser);
+userRouter.route('/:id').get(getUser);
 
 export default userRouter;

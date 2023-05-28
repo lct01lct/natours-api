@@ -1,6 +1,6 @@
 import { UserModel } from '@/models';
 import { AppError, catchAsync } from '@/utils';
-import { GetAllUsersApi, UpdateUserApi } from '@/apis';
+import { GetAllUsersApi, UpdateUserApi, DeleteUserApi } from '@/apis';
 
 const getAllUsers = catchAsync<GetAllUsersApi>(async (req, res) => {
   const users = await UserModel.find();
@@ -41,7 +41,13 @@ const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
   });
 });
 
-const deleteUser = catchAsync(async (req, res) => {});
+const deleteUser = catchAsync<DeleteUserApi>(async (req, res, next) => {
+  await UserModel.findByIdAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+  });
+});
 
 function filterObj<Obj extends object, F extends keyof Obj>(obj: Obj, ...allowFields: F[]): object {
   const newObj = {} as Record<F, Obj[F]>;
