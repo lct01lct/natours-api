@@ -20,3 +20,24 @@ export interface ProtectApi {
     token: string;
   };
 }
+
+export interface ForgotPasswordApi {
+  body: {
+    email: string;
+  };
+  res: Res<{
+    message: string;
+  }>;
+}
+
+export interface ResetPasswordApi {
+  params: {
+    token: string;
+  };
+  body: {
+    password: string;
+    passwordConfirm: string;
+    token: string;
+  };
+  res: Res<{}>;
+}

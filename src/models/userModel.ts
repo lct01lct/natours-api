@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
+import * as crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 
 const correctPassword = async function (candidatePassword: string, userPassword: string) {
@@ -8,12 +9,20 @@ const correctPassword = async function (candidatePassword: string, userPassword:
 
 const changedPasswordAfter = function (this: User, JWTTimestamp: number) {
   if (this.passwordChangedAt) {
-    const changeTimesStamp = parseInt(String(this.passwordChangedAt.getTime()));
-
+    const changeTimesStamp = parseInt(String(this.passwordChangedAt.getTime() / 1000));
+    console.log(JWTTimestamp, changeTimesStamp);
     return JWTTimestamp < changeTimesStamp;
   }
 
   return false;
+};
+
+const createPasswordResetToken = function (this: User) {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+  return resetToken;
 };
 
 export interface User {
@@ -24,8 +33,11 @@ export interface User {
   passwordConfirm: string;
   passwordChangedAt: Date;
   role: Role;
+  passwordResetToken: string;
+  passwordResetExpires: Date;
   correctPassword?: typeof correctPassword;
   changedPasswordAfter?: typeof changedPasswordAfter;
+  createPasswordResetToken?: typeof createPasswordResetToken;
 }
 
 const roles = ['user', 'guide', 'lead-guide', 'admin'] as const;
@@ -68,6 +80,8 @@ const userSchema = new Schema<User>({
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -81,7 +95,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = new Date(Date.now() - 1000);
+
+  next();
+});
+
 userSchema.methods.correctPassword = correctPassword;
 userSchema.methods.changedPasswordAfter = changedPasswordAfter;
+userSchema.methods.createPasswordResetToken = createPasswordResetToken;
 
 export const UserModel = model('User', userSchema);

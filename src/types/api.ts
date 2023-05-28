@@ -32,7 +32,8 @@ export type FR<T extends FROptions = FROptionsDefault> = (
 export type Res<Data = never, Message = string> =
   | {
       status: 'success';
-      data: Data;
+      data?: Data;
+      message?: string;
     }
   | {
       status: 'fail';

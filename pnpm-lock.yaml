@@ -7,6 +7,7 @@ specifiers:
   '@types/jsonwebtoken': ^9.0.2
   '@types/morgan': ^1.9.4
   '@types/node': ^20.1.5
+  '@types/nodemailer': ^6.4.8
   '@types/validator': ^13.7.17
   bcryptjs: ^2.4.3
   dotenv: ^16.0.3
@@ -14,6 +15,7 @@ specifiers:
   jsonwebtoken: ^9.0.0
   mongoose: ^7.2.0
   morgan: ^1.10.0
+  nodemailer: ^6.9.2
   ts-node-dev: ^2.0.0
   tsc-alias: ^1.8.6
   tsconfig-paths: ^4.2.0
@@ -27,6 +29,7 @@ dependencies:
   jsonwebtoken: 9.0.0
   mongoose: 7.2.0
   morgan: 1.10.0
+  nodemailer: 6.9.2
   validator: 13.9.0
 
 devDependencies:
@@ -36,6 +39,7 @@ devDependencies:
   '@types/jsonwebtoken': 9.0.2
   '@types/morgan': 1.9.4
   '@types/node': 20.1.5
+  '@types/nodemailer': 6.4.8
   '@types/validator': 13.7.17
   ts-node-dev: 2.0.0_idl4vv3fut2v7dzemay7ayukdm
   tsc-alias: 1.8.6
@@ -118,7 +122,7 @@ packages:
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 20.1.5
+      '@types/node': 20.2.1
     dev: true
 
   /@types/dotenv/8.2.0:
@@ -173,6 +177,12 @@ packages:
   /@types/node/20.2.1:
     resolution: {integrity: sha512-DqJociPbZP1lbZ5SQPk4oag6W7AyaGMO6gSfRwq3PWl4PXTwJpRQJhDq4W0kzrg3w6tJ1SwlvGZ5uKFHY13LIg==}
 
+  /@types/nodemailer/6.4.8:
+    resolution: {integrity: sha512-oVsJSCkqViCn8/pEu2hfjwVO+Gb3e+eTWjg3PcjeFKRItfKpKwHphQqbYmPQrlMk+op7pNNWPbsJIEthpFN/OQ==}
+    dependencies:
+      '@types/node': 20.2.1
+    dev: true
+
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
@@ -185,7 +195,7 @@ packages:
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
     dependencies:
       '@types/mime': 1.3.2
-      '@types/node': 20.1.5
+      '@types/node': 20.2.1
     dev: true
 
   /@types/serve-static/1.15.1:
@@ -906,6 +916,11 @@ packages:
   /negotiator/0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /nodemailer/6.9.2:
+    resolution: {integrity: sha512-4+TYaa/e1nIxQfyw/WzNPYTEZ5OvHIDEnmjs4LPmIfccPQN+2CYKmGHjWixn/chzD3bmUTu5FMfpltizMxqzdg==}
+    engines: {node: '>=6.0.0'}
     dev: false
 
   /normalize-path/3.0.0:
