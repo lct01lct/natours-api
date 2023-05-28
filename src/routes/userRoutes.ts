@@ -17,7 +17,7 @@ userRouter.post('/forgotPassword', forgotPassword);
 userRouter.patch('/resetPassword/:token', protect, resetPassword);
 userRouter.patch('/updatePassword', protect, updatePassword);
 
-userRouter.route('/').get(getAllUsers).post(createUser);
-userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+userRouter.route('/').get(getAllUsers).post(createUser).patch(protect, updateUser);
+userRouter.route('/:id').get(getUser).delete(deleteUser);
 
 export default userRouter;

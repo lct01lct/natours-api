@@ -1,6 +1,6 @@
 import { UserModel } from '@/models';
-import { catchAsync } from '@/utils';
-import { GetAllUsersApi } from '@/apis';
+import { AppError, catchAsync } from '@/utils';
+import { GetAllUsersApi, UpdateUserApi } from '@/apis';
 
 const getAllUsers = catchAsync<GetAllUsersApi>(async (req, res) => {
   const users = await UserModel.find();
@@ -18,8 +18,39 @@ const getUser = catchAsync(async (req, res) => {});
 
 const createUser = catchAsync(async (req, res) => {});
 
-const updateUser = catchAsync(async (req, res) => {});
+const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
+  const { password, passwordConfrim } = req.body;
+
+  if (password || passwordConfrim) {
+    return next(
+      new AppError('This route is not for password updates. Please use updatePassword Route', 400)
+    );
+  }
+
+  const filteredBody = filterObj(req.body, 'name', 'email');
+  const newUser = await UserModel.findByIdAndUpdate(req.user._id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: newUser,
+    },
+  });
+});
 
 const deleteUser = catchAsync(async (req, res) => {});
+
+function filterObj<Obj extends object, F extends keyof Obj>(obj: Obj, ...allowFields: F[]): object {
+  const newObj = {} as Record<F, Obj[F]>;
+
+  for (const field of allowFields) {
+    if (obj[field]) newObj[field] = obj[field];
+  }
+
+  return newObj;
+}
 
 export { getAllUsers, getUser, createUser, updateUser, deleteUser };

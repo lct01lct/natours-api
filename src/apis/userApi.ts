@@ -7,3 +7,16 @@ export interface GetAllUsersApi {
     users: Pick<User, Exclude<keyof User, 'password'>>[];
   }>;
 }
+
+export interface UpdateUserApi {
+  body: {
+    password: string;
+    passwordConfrim: string;
+    name?: string;
+    email?: string;
+  };
+
+  res: Res<{
+    user: User;
+  }>;
+}

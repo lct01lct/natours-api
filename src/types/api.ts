@@ -1,6 +1,7 @@
 import { User } from '@/models';
 import { AppError } from '@/utils';
 import type { Request, Response, NextFunction } from 'express';
+import { Document } from 'mongoose';
 
 export interface FROptions {
   params?: any;
@@ -10,7 +11,7 @@ export interface FROptions {
 }
 
 interface ReqExtend {
-  user?: User & { _id?: string };
+  user?: User & { _id?: string } & Document;
 }
 
 export type FROptionsDefault = Required<Record<keyof FROptions, never>>;
