@@ -12,7 +12,7 @@ mongoose.connect(DB).then(() => {
   logger.success('DB connection successful!');
 });
 
-const tours: Tour[] = JSON.parse(readFileSync(join(__dirname, '/tours-simple.json'), 'utf-8'));
+const tours: Tour[] = JSON.parse(readFileSync(join(__dirname, '/tours.json'), 'utf-8'));
 
 const importData = async () => {
   try {

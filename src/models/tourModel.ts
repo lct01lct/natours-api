@@ -15,6 +15,14 @@ export interface Tour {
   images?: string[];
   createdAt?: Date;
   startDates?: Date[];
+
+  locations: {
+    type: string;
+    coordinates: [number, number];
+    address: string;
+    description: string;
+    day: number;
+  }[];
 }
 
 const tourSchema = new Schema<Tour>(
@@ -39,7 +47,7 @@ const tourSchema = new Schema<Tour>(
       type: String,
       // required: [true, 'A tour must have a difficulty'],
       enum: {
-        values: ['esay', 'medium', 'difficult'],
+        values: ['easy', 'medium', 'difficult'],
         message: 'Difficulty is either: easy, medium, difficult',
       },
     },
@@ -88,6 +96,19 @@ const tourSchema = new Schema<Tour>(
       select: false,
     },
     startDates: [Date],
+    locations: [
+      {
+        type: {
+          type: String,
+          enum: ['Point'],
+          default: 'Point',
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
