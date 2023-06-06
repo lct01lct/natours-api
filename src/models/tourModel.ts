@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
-
+import { User } from './userModel';
+import { Review } from './reviewModel';
 export interface Tour {
   name: string;
   duration: number;
@@ -15,7 +16,6 @@ export interface Tour {
   images?: string[];
   createdAt?: Date;
   startDates?: Date[];
-
   locations: {
     type: string;
     coordinates: [number, number];
@@ -23,6 +23,10 @@ export interface Tour {
     description: string;
     day: number;
   }[];
+  guides: User[];
+
+  durationWeeks: number;
+  reviews?: Review[] | null;
 }
 
 const tourSchema = new Schema<Tour>(
@@ -92,7 +96,7 @@ const tourSchema = new Schema<Tour>(
     images: [String],
     createdAt: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
       select: false,
     },
     startDates: [Date],
@@ -109,6 +113,12 @@ const tourSchema = new Schema<Tour>(
         day: Number,
       },
     ],
+    guides: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -118,6 +128,14 @@ const tourSchema = new Schema<Tour>(
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// Virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+  justOne: true,
 });
 
 // tourSchema.pre('save', function (next) {
@@ -145,6 +163,22 @@ tourSchema.virtual('durationWeeks').get(function () {
 //   console.log(Date.now() - this.start);
 //   next();
 // });
+
+// tourSchema.pre('save', async function (next) {
+//   this.guides = await Promise.all(this.guides.map(async el => UserModel.findById(el)));
+
+//   next();
+// });
+
+tourSchema.pre(/^find/, function (next) {
+  // @ts-ignore
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+
+  next();
+});
 
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({

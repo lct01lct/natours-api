@@ -1,5 +1,5 @@
 import app from './app';
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import { logger } from './utils';
 import { handleUncaughtExpectionError, handleUnhandledRejection } from './middleware';
 
