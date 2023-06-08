@@ -5,8 +5,12 @@ import {
   forgotPassword,
   resetPassword,
   updatePassword,
-} from '@/controllers/authControllers';
-import { getAllUsers, getUser, createUser, updateUser, deleteUser } from '../controllers';
+  getAllUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+} from '@/controllers';
 import { Router } from 'express';
 
 const userRouter = Router();
@@ -23,6 +27,7 @@ userRouter
   .post(createUser)
   .patch(protect, updateUser)
   .delete(protect, deleteUser);
+
 userRouter.route('/:id').get(getUser);
 
 export default userRouter;

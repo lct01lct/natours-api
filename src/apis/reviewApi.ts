@@ -6,6 +6,9 @@ type BaseRes = {
 };
 
 export interface GetAllReviewsApi {
+  params: {
+    tourId?: string;
+  };
   res: Res<{
     reviews: Review[];
     results: number;
@@ -13,7 +16,22 @@ export interface GetAllReviewsApi {
 }
 
 export interface CreateReviewApi {
-  body: {};
+  params: {
+    tourId?: string;
+  };
+  body: {
+    tour?: string;
+    user?: string;
+  };
 
   res: Res<BaseRes>;
+}
+
+export interface DeleteReviewApi {
+  params: { id: string };
+}
+
+export interface UpdateReviewApi {
+  params: { id: string };
+  res: Res<{ review: Review }>;
 }

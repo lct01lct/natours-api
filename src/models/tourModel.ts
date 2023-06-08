@@ -135,7 +135,6 @@ tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
   localField: '_id',
-  justOne: true,
 });
 
 // tourSchema.pre('save', function (next) {

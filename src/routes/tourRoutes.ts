@@ -8,11 +8,14 @@ import {
   aliasTopTours,
   getTourStats,
   getMonthlyPlan,
-} from '../controllers';
+} from '@/controllers';
 import { protect, restrictTo } from '@/controllers/authControllers';
+import reviewRouter from './reviewRoutes';
 
 const tourRouter = Router();
 // tourRouter.param('id', checkId);
+
+tourRouter.use('/:tourId/reviews', reviewRouter);
 
 tourRouter.route('/tour-stats').get(getTourStats);
 tourRouter.route('/top-5-cheap').get(aliasTopTours, getAllTours);

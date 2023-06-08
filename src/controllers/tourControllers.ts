@@ -1,5 +1,5 @@
 import { TourModel } from '../models';
-import { FR, FROptions, FROptionsDefault } from '../types';
+import { deleteOne, updateOne } from './handlerFactor';
 import type {
   CreateTourApi,
   GetAllToursApi,
@@ -52,30 +52,9 @@ export const createTour = catchAsync<CreateTourApi>(async (req, res) => {
   });
 });
 
-export const updateTour = catchAsync<UpdateTourApi>(async (req, res) => {
-  const newTour = await TourModel.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, // return the modified data rather than original
-    runValidators: true, // from model
-  });
+export const updateTour = updateOne<UpdateTourApi>(TourModel, 'tour');
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
-export const deleteTour = catchAsync<DeteleTourApi>(async (req, res, next) => {
-  const tour = await TourModel.findByIdAndDelete(req.params.id);
-
-  if (!tour) return next(new AppError('No tour found with that ID', 404));
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+export const deleteTour = deleteOne<DeteleTourApi>(TourModel);
 
 export const aliasTopTours = catchAsync<GetAllToursApi>(async (req, res, next) => {
   req.query.limit = '5';
