@@ -39,9 +39,11 @@ export const login = catchAsync<LoginApi>(async (req, res, next) => {
 
   const user = await UserModel.findOne({ email }).select('+password');
 
+  if (!user) return next(new AppError('Incorrect email or password', 401));
+
   const correct = await (user as User).correctPassword?.(user.password, password);
 
-  if (!user || !correct) return next(new AppError('Incorrect email or password', 401));
+  if (!correct) return next(new AppError('Incorrect email or password', 401));
 
   const token = signToken(user._id);
 

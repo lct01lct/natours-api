@@ -1,6 +1,7 @@
 import { UserModel } from '@/models';
 import { AppError, catchAsync } from '@/utils';
 import { GetAllUsersApi, UpdateUserApi, DeleteUserApi } from '@/apis';
+import * as factory from './handlerFactory';
 
 const getAllUsers = catchAsync<GetAllUsersApi>(async (req, res) => {
   const users = await UserModel.find();
@@ -14,7 +15,11 @@ const getAllUsers = catchAsync<GetAllUsersApi>(async (req, res) => {
   });
 });
 
-const getUser = catchAsync(async (req, res) => {});
+const getUserMiddleWare = catchAsync<{ params?: { id: string } }>(async (req, res, next) => {
+  req.params.id = req.user.id;
+});
+
+const getUser = factory.getOne(UserModel);
 
 const createUser = catchAsync(async (req, res) => {});
 
@@ -42,7 +47,7 @@ const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
 });
 
 const deleteUser = catchAsync<DeleteUserApi>(async (req, res, next) => {
-  await UserModel.findByIdAndUpdate(req.user._id, { active: false });
+  await UserModel.findByIdAndDelete(req.user._id, { active: false });
 
   res.status(204).json({
     status: 'success',
@@ -59,4 +64,4 @@ function filterObj<Obj extends object, F extends keyof Obj>(obj: Obj, ...allowFi
   return newObj;
 }
 
-export { getAllUsers, getUser, createUser, updateUser, deleteUser };
+export { getUserMiddleWare, getAllUsers, getUser, createUser, updateUser, deleteUser };
