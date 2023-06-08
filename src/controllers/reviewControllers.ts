@@ -1,37 +1,27 @@
 import { ReviewModel } from '@/models/reviewModel';
 import { catchAsync } from '@/utils';
-import { GetAllReviewsApi, CreateReviewApi, DeleteReviewApi, UpdateReviewApi } from '@/apis';
-import { deleteOne, updateOne } from './handlerFactor';
+import {
+  GetAllReviewsApi,
+  CreateReviewApi,
+  DeleteReviewApi,
+  UpdateReviewApi,
+  GetReviewApi,
+} from '@/apis';
+import * as factory from './handlerFactory';
+import { ModelFields, complex } from '@/models';
 
-export const getAllReviews = catchAsync<GetAllReviewsApi>(async (req, res) => {
-  const filter: { tour?: string } = {};
-  if (req.params.tourId) filter.tour = req.params.tourId;
-
-  const reviews = await ReviewModel.find(filter);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      results: reviews.length,
-      reviews,
-    },
-  });
-});
-
-export const createReview = catchAsync<CreateReviewApi>(async (req, res) => {
+export const setTourUserIds = catchAsync<CreateReviewApi>(async (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
 
-  const newReview = await ReviewModel.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      review: newReview,
-    },
-  });
+  next();
 });
 
-export const deleteReview = deleteOne<DeleteReviewApi>(ReviewModel);
-
-export const updateReview = updateOne<UpdateReviewApi>(ReviewModel, 'review');
+export const getAllReviews = factory.getAll<GetAllReviewsApi>(
+  ReviewModel,
+  complex(ModelFields.REVIRW)
+);
+export const getReview = factory.getOne<GetReviewApi>(ReviewModel, null, ModelFields.REVIRW);
+export const createReview = factory.createOne<CreateReviewApi>(ReviewModel, ModelFields.REVIRW);
+export const deleteReview = factory.deleteOne<DeleteReviewApi>(ReviewModel);
+export const updateReview = factory.updateOne<UpdateReviewApi>(ReviewModel, ModelFields.REVIRW);

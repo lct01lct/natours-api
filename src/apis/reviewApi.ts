@@ -35,3 +35,7 @@ export interface UpdateReviewApi {
   params: { id: string };
   res: Res<{ review: Review }>;
 }
+
+export interface GetReviewApi {
+  params: { id: string };
+}

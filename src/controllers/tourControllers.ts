@@ -1,5 +1,5 @@
-import { TourModel } from '../models';
-import { deleteOne, updateOne } from './handlerFactor';
+import { TourModel, ModelFields, complex } from '@/models';
+import { createOne, deleteOne, getAll, getOne, updateOne } from './handlerFactory';
 import type {
   CreateTourApi,
   GetAllToursApi,
@@ -10,49 +10,15 @@ import type {
   GetMonthlyPlan,
 } from '../apis';
 
-import { APIFeatures, AppError, catchAsync } from '@/utils';
+import { APIFeatures, catchAsync } from '@/utils';
 
-export const getAllTours = catchAsync<GetAllToursApi>(async (req, res) => {
-  const features = new APIFeatures(TourModel.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+export const getAllTours = getAll<GetAllToursApi>(TourModel, complex(ModelFields.TOUR));
 
-  const tours = await features.query;
+export const getTour = getOne<GetTourApi>(TourModel, { path: 'reviews' }, ModelFields.TOUR);
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      results: tours.length,
-      tours: tours,
-    },
-  });
-});
+export const createTour = createOne<CreateTourApi>(TourModel, ModelFields.TOUR);
 
-export const getTour = catchAsync<GetTourApi>(async (req, res, next) => {
-  const tour = await TourModel.findById(req.params.id).populate('reviews');
-
-  if (!tour) return next(new AppError('No tour found with that ID', 404));
-
-  res.status(200).json({
-    status: 'success',
-    data: { tour },
-  });
-});
-
-export const createTour = catchAsync<CreateTourApi>(async (req, res) => {
-  const newTour = await TourModel.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
-export const updateTour = updateOne<UpdateTourApi>(TourModel, 'tour');
+export const updateTour = updateOne<UpdateTourApi>(TourModel, ModelFields.TOUR);
 
 export const deleteTour = deleteOne<DeteleTourApi>(TourModel);
 
