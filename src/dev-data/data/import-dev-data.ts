@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import mongoose from 'mongoose';
 import '@/app'; // config env
-import { TourModel } from '@/models';
+import { ReviewModel, TourModel, User, UserModel } from '@/models';
 import { Tour } from '@/models';
 import { logger } from '@/utils';
 
@@ -12,11 +12,21 @@ mongoose.connect(DB).then(() => {
   logger.success('DB connection successful!');
 });
 
-const tours: Tour[] = JSON.parse(readFileSync(join(__dirname, '/tours.json'), 'utf-8'));
+const readFiles = <T>(path: string): T[] => {
+  return JSON.parse(readFileSync(join(__dirname, path), 'utf-8'));
+};
+
+const tours = readFiles<Tour>('./tours.json');
+const users = readFiles<User>('./users.json');
+const reviews = readFiles<User>('./reviews.json');
 
 const importData = async () => {
   try {
-    await TourModel.create(tours);
+    await Promise.all([
+      TourModel.create(tours),
+      UserModel.create(users, { validateBeforeSave: false }),
+      ReviewModel.create(reviews),
+    ]);
     logger.success('Data successfully loaded!');
   } catch (err) {
     logger.error(err);
@@ -25,7 +35,7 @@ const importData = async () => {
 
 const deleteData = async () => {
   try {
-    await TourModel.deleteMany();
+    await Promise.all([TourModel.deleteMany(), UserModel.deleteMany(), ReviewModel.deleteMany()]);
     logger.success('Data successfully deleted!');
   } catch (err) {
     logger.error(err);
