@@ -55,3 +55,27 @@ export type GetMonthlyPlan = {
     plan: any[];
   }>;
 };
+
+export interface GetToursWithinApi {
+  params: {
+    distance: number;
+    latlng: string;
+    unit: string;
+  };
+
+  res: Res<{
+    results: number;
+    tours: Tour[];
+  }>;
+}
+
+export interface GetDistanceApi {
+  params: {
+    latlng: string;
+    unit: string;
+  };
+
+  res: Res<{
+    distances: any[];
+  }>;
+}

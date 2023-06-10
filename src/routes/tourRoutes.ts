@@ -8,6 +8,8 @@ import {
   aliasTopTours,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
+  getDistances,
 } from '@/controllers';
 import { protect, restrictTo } from '@/controllers/authControllers';
 import reviewRouter from './reviewRoutes';
@@ -19,6 +21,8 @@ tourRouter.use('/:tourId/reviews', reviewRouter);
 
 tourRouter.route('/tour-stats').get(getTourStats);
 tourRouter.route('/top-5-cheap').get(aliasTopTours, getAllTours);
+tourRouter.route('/tours-within/:distance/latlng/:latlng/unit/:unit').get(getToursWithin);
+tourRouter.route('/distances/:latlng/unit/:unit').get(getDistances);
 tourRouter
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);

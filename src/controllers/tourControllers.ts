@@ -8,9 +8,11 @@ import type {
   DeteleTourApi,
   GetTourStats,
   GetMonthlyPlan,
+  GetToursWithinApi,
+  GetDistanceApi,
 } from '../apis';
 
-import { APIFeatures, catchAsync } from '@/utils';
+import { APIFeatures, AppError, catchAsync } from '@/utils';
 
 export const getAllTours = getAll<GetAllToursApi>(TourModel, complex(ModelFields.TOUR));
 
@@ -103,5 +105,65 @@ export const getMonthlyPlan = catchAsync<GetMonthlyPlan>(async (req, res) => {
   res.status(200).json({
     status: 'success',
     data: { results: plan?.length ?? 0, plan },
+  });
+});
+
+export const getToursWithin = catchAsync<GetToursWithinApi>(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!lat || !lng) {
+    return next(new AppError('Please provide latitutr and longitude in the format lat,lng', 400));
+  }
+
+  const tours = await TourModel.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      results: tours.length,
+      tours,
+    },
+  });
+});
+
+export const getDistances = catchAsync<GetDistanceApi>(async (req, res, next) => {
+  const { latlng, unit } = req.params;
+  const tuple = latlng.split(',');
+  const lat = Number(tuple[0]);
+  const lng = Number(tuple[1]);
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001;
+
+  if (!lat || !lng) {
+    next(new AppError('Please provide latitutr and longitude in the format lat,lng.', 400));
+  }
+
+  const distances = await TourModel.aggregate([
+    {
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [lng, lat],
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      distances,
+    },
   });
 });

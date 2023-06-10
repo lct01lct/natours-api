@@ -108,7 +108,10 @@ const tourSchema = new Schema<Tour>(
           enum: ['Point'],
           default: 'Point',
         },
-        coordinates: [Number],
+        coordinates: {
+          type: [Number],
+          index: '2dsphere',
+        },
         address: String,
         description: String,
         day: Number,
@@ -128,6 +131,7 @@ const tourSchema = new Schema<Tour>(
 );
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -182,14 +186,14 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({
-    $match: {
-      secretTour: { $ne: true },
-    },
-  });
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({
+//     $match: {
+//       secretTour: { $ne: true },
+//     },
+//   });
 
-  next();
-});
+//   next();
+// });
 
 export const TourModel = model<Tour>('Tour', tourSchema);
