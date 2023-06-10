@@ -3,3 +3,4 @@ export * from './APIFeature';
 export * from './AppError';
 export * from './catchAsync';
 export * from './email';
+export * from './protectApp';
