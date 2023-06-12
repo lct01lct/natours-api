@@ -28,3 +28,9 @@ export const getTourPage = catchAsync<{ params: { slug: string } }>(async (req, 
     tour,
   });
 });
+
+export const getLoginPage = catchAsync(async (req, res) => {
+  res.status(200).render('login', {
+    title: 'Log into your account',
+  });
+});

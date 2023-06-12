@@ -45,21 +45,16 @@ export const login = catchAsync<LoginApi>(async (req, res, next) => {
 
   if (!correct) return next(new AppError('Incorrect email or password', 401));
 
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      token,
-    },
-  });
+  sendToken(user, 200, res);
 });
 
 export const protect = catchAsync(async (req, res, next) => {
-  let token = req.headers.authorization;
+  let token: string;
 
-  if (token && token.startsWith('Bearer ')) {
-    token = token.split(' ')[1];
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {

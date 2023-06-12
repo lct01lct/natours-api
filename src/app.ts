@@ -5,6 +5,7 @@ import initRoutes from './routes';
 import { errorHandler } from './middleware';
 import { join } from 'path';
 import { protectApp } from '@/utils';
+import cookieParser from 'cookie-parser';
 
 // Reading config.env
 // Ensure config before using all enviroment variable
@@ -23,6 +24,8 @@ app.use(express.static(join(__dirname, './public')));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 // Parsing req.body
 app.use(express.json({ limit: '10kb' }));
+// Parsing cookie
+app.use(cookieParser());
 
 protectApp(app);
 
