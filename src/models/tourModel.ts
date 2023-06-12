@@ -19,7 +19,7 @@ export interface Tour {
   createdAt?: Date;
   startDates?: Date[];
   locations: {
-    type: string;
+    type: 'Point';
     coordinates: [number, number];
     address: string;
     description: string;
@@ -27,7 +27,7 @@ export interface Tour {
   }[];
   guides: User[];
   startLocation: {
-    type: string;
+    type: 'Point';
     coordinates: [number];
     address: String;
     description: String;
