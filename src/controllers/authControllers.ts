@@ -77,6 +77,24 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+export const isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    const decoded = await jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+
+    if (typeof decoded === 'string') return next(new AppError('Jwt parse went wrong!', 401));
+    const freshUser = await UserModel.findById(decoded.id);
+
+    if (!freshUser) return next(new AppError('', 401));
+
+    const isChangePassword = freshUser.changedPasswordAfter(decoded.iat);
+
+    if (isChangePassword) return next(new AppError('', 401));
+
+    res.locals.user = freshUser;
+  }
+  next();
+});
+
 export const restrictTo = (...roles: Role[]) => {
   return catchAsync(async (req, res, next) => {
     if (!roles.includes(req.user.role)) {

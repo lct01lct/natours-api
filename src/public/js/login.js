@@ -1,17 +1,22 @@
 const login = async (email, password) => {
-  password = '$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS';
+  try {
+    password = '$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS';
 
-  const res = await axios({
-    method: 'post',
-    url: 'http://127.0.0.1:3000/api/v1/users/login',
-    data: {
-      email,
-      password,
-    },
-  });
+    const { data } = await axios({
+      method: 'post',
+      url: 'http://127.0.0.1:3000/api/v1/users/login',
+      data: {
+        email,
+        password,
+      },
+    });
 
-  console.log(res);
-  console.log(document.cookie);
+    if (data.status === 'success') {
+      location.assign('/');
+    }
+  } catch (err) {
+    alert(err.response.data.message);
+  }
 };
 
 if (document.getElementById('email') && document.getElementById('password')) {
