@@ -1,3 +1,4 @@
+import { TourModel } from '@/models';
 import { catchAsync } from '@/utils';
 
 export const getIndexPage = catchAsync(async (req, res) => {
@@ -8,8 +9,11 @@ export const getIndexPage = catchAsync(async (req, res) => {
 });
 
 export const getOverviewPage = catchAsync(async (req, res) => {
+  const tours = await TourModel.find();
+
   res.status(200).render('overview', {
     title: 'All Tours',
+    tours,
   });
 });
 

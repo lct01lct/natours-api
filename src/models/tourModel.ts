@@ -1,19 +1,21 @@
 import { Schema, model } from 'mongoose';
 import { User } from './userModel';
 import { Review } from './reviewModel';
+import slugify from 'slugify';
 export interface Tour {
   name: string;
   duration: number;
   maxGroupSize: number;
   difficulty: 'easy' | 'medium' | 'difficult';
   ratingsAverage?: number;
-  ratingQuantity?: number;
+  ratingsQuantity?: number;
   price: number;
   priceDiscount?: number;
   summary: string;
   description?: string;
   imageCover: string;
   images?: string[];
+  slug: string;
   createdAt?: Date;
   startDates?: Date[];
   locations: {
@@ -24,7 +26,12 @@ export interface Tour {
     day: number;
   }[];
   guides: User[];
-
+  startLocation: {
+    type: string;
+    coordinates: [number];
+    address: String;
+    description: String;
+  };
   durationWeeks: number;
   reviews?: Review[] | null;
 }
@@ -55,6 +62,7 @@ const tourSchema = new Schema<Tour>(
         message: 'Difficulty is either: easy, medium, difficult',
       },
     },
+    slug: String,
     ratingsAverage: {
       type: Number,
       default: 4.5,
@@ -62,7 +70,7 @@ const tourSchema = new Schema<Tour>(
       max: [5, 'Rating must be below 5.0'],
       set: (val: number) => Math.round(val * 10) / 10,
     },
-    ratingQuantity: {
+    ratingsQuantity: {
       type: Number,
       default: 0,
     },
@@ -117,6 +125,17 @@ const tourSchema = new Schema<Tour>(
         day: Number,
       },
     ],
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
     guides: [
       {
         type: Schema.Types.ObjectId,
@@ -131,6 +150,7 @@ const tourSchema = new Schema<Tour>(
 );
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
 tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function () {
@@ -144,11 +164,11 @@ tourSchema.virtual('reviews', {
   localField: '_id',
 });
 
-// tourSchema.pre('save', function (next) {
-//   // create a new properity need declare on model
-//   // this.slug = slugify(this.name, { lower: true});
-//   next();
-// });
+tourSchema.pre('save', function (next) {
+  // create a new properity need declare on model
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 // tourSchema.post('save', function (doc, next) {
 //   // console.log(this === doc); // true

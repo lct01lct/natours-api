@@ -30,7 +30,7 @@ export function protectApp(app: Express, path: string = '/api') {
       whitelist: [
         'duration',
         'ratingsAverage',
-        'ratingQuantity',
+        'ratingsQuantity',
         'maxGroupSize',
         'difficulty',
         'price',
