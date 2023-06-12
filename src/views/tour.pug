@@ -10,6 +10,7 @@ mixin overviewBox(label, text, icon)
     span.overview-box__tex= text
 
 
+block append head
 
 
 block content
@@ -67,7 +68,7 @@ block content
 
 
   section.section-map
-    #map
+    #map(data-locations=`${JSON.stringify(tour.locations)}`)
 
   section.section-reviews
     .reviews
