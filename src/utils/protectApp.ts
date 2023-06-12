@@ -16,23 +16,23 @@ export function protectApp(app: Express, path: string = '/api') {
   app.use(path, limiter);
 
   // Set security HTTP headers
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'", 'data:', 'blob:'],
+  // app.use(
+  //   helmet.contentSecurityPolicy({
+  //     directives: {
+  //       defaultSrc: ["'self'", 'data:', 'blob:'],
 
-        fontSrc: ["'self'", 'https:', 'data:'],
+  //       fontSrc: ["'self'", 'https:', 'data:'],
 
-        scriptSrc: ["'self'", 'https://*.cloudflare.com'],
+  //       scriptSrc: ["'self'", 'https://*.cloudflare.com'],
 
-        scriptSrcElem: ["'self'", 'https:', 'https://*.cloudflare.com'],
+  //       scriptSrcElem: ["'self'", 'https:', 'https://*.cloudflare.com'],
 
-        styleSrc: ["'self'", 'https:', 'unsafe-inline'],
+  //       styleSrc: ["'self'", 'https:', 'unsafe-inline'],
 
-        connectSrc: ["'self'", 'data', 'https://*.cloudflare.com'],
-      },
-    })
-  );
+  //       connectSrc: ["'self'", 'data', 'https://*.cloudflare.com'],
+  //     },
+  //   })
+  // );
 
   // Data sanitization against NoSQL query injection
   app.use(mongoSanitize());

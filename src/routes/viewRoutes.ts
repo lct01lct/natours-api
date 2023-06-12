@@ -1,11 +1,11 @@
-import { getIndexPage, getLoginPage, getOverviewPage, getTourPage } from '@/controllers';
+import { getIndexPage, getLoginPage, getOverviewPage, getTourPage, protect } from '@/controllers';
 import { Router } from 'express';
 
 const viewRouter = Router();
 
-viewRouter.get('/', getIndexPage);
+viewRouter.get('/', getOverviewPage);
 viewRouter.get('/overview', getOverviewPage);
-viewRouter.get('/tour/:slug', getTourPage);
+viewRouter.get('/tour/:slug', protect, getTourPage);
 viewRouter.get('/login', getLoginPage);
 
 export default viewRouter;

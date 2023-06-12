@@ -14,10 +14,12 @@ const login = async (email, password) => {
   console.log(document.cookie);
 };
 
-document.getElementById('email').value = 'admin@natours.io';
-document.getElementById('password').value = '123456';
+if (document.getElementById('email') && document.getElementById('password')) {
+  document.getElementById('email').value = 'admin@natours.io';
+  document.getElementById('password').value = '123456';
+}
 
-document.querySelector('.form').addEventListener('submit', e => {
+document.querySelector('.form')?.addEventListener('submit', e => {
   e.preventDefault();
 
   const email = document.getElementById('email').value;
