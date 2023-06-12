@@ -5,6 +5,6 @@ const viewRouter = Router();
 
 viewRouter.get('/', getIndexPage);
 viewRouter.get('/overview', getOverviewPage);
-viewRouter.get('/tour', getTourPage);
+viewRouter.get('/tour/:slug', getTourPage);
 
 export default viewRouter;
