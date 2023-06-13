@@ -5538,7 +5538,7 @@ exports.logout = logout;
 var initLoginPage = function initLoginPage() {
   var oEmail = document.getElementById('email');
   var oPassword = document.getElementById('password');
-  var oForm = document.querySelector('.form');
+  var oForm = document.querySelector('.form--login');
   if (oEmail && oPassword) {
     oEmail.value = 'admin@natours.io';
     oPassword.value = '123456';

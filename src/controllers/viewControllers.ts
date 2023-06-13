@@ -1,4 +1,4 @@
-import { TourModel } from '@/models';
+import { TourModel, UserModel } from '@/models';
 import { AppError, catchAsync } from '@/utils';
 
 export const getIndexPage = catchAsync(async (req, res) => {
@@ -36,3 +36,28 @@ export const getLoginPage = catchAsync(async (req, res) => {
     title: 'Log into your account',
   });
 });
+
+export const getAccountPage = catchAsync(async (req, res) => {
+  res.status(200).render('account', { title: 'Your account' });
+});
+
+export const updateUserData = catchAsync<{ body: { name: string; email: string } }>(
+  async (req, res) => {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.user.id,
+      {
+        name: req.body.name,
+        email: req.body.email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).render('account', {
+      title: 'Your account',
+      user: updatedUser,
+    });
+  }
+);

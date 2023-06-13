@@ -44,7 +44,7 @@ export const logout = async () => {
 export const initLoginPage = () => {
   const oEmail = document.getElementById('email');
   const oPassword = document.getElementById('password');
-  const oForm = document.querySelector('.form');
+  const oForm = document.querySelector('.form--login');
 
   if (oEmail && oPassword) {
     oEmail.value = 'admin@natours.io';

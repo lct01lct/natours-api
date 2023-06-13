@@ -84,6 +84,8 @@ export const protect = catchAsync(async (req, res, next) => {
   if (isChangePassword) return next(new AppError('User recently changed password!', 401));
 
   req.user = freshUser as any;
+  res.locals.user = freshUser;
+
   next();
 });
 

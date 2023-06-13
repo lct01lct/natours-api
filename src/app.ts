@@ -24,6 +24,7 @@ app.use(express.static(join(__dirname, './public')));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 // Parsing req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Parsing cookie
 app.use(cookieParser());
 
