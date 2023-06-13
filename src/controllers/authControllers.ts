@@ -6,6 +6,7 @@ import {
   ForgotPasswordApi,
   ResetPasswordApi,
   UpdatePasswordApi,
+  LogoutApi,
 } from '@/apis';
 import jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
@@ -48,6 +49,15 @@ export const login = catchAsync<LoginApi>(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
+export const logout = catchAsync<LogoutApi>(async (req, res, next) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({ status: 'success' });
+});
+
 export const protect = catchAsync(async (req, res, next) => {
   let token: string;
 
@@ -78,21 +88,26 @@ export const protect = catchAsync(async (req, res, next) => {
 });
 
 export const isLoggedIn = catchAsync(async (req, res, next) => {
-  if (req.cookies.jwt) {
-    const decoded = await jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+  try {
+    if (req.cookies.jwt) {
+      const decoded = await jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
 
-    if (typeof decoded === 'string') return next(new AppError('Jwt parse went wrong!', 401));
-    const freshUser = await UserModel.findById(decoded.id);
+      if (typeof decoded === 'string') return next(new AppError('Jwt parse went wrong!', 401));
+      const freshUser = await UserModel.findById(decoded.id);
 
-    if (!freshUser) return next(new AppError('', 401));
+      if (!freshUser) return next(new AppError('', 401));
 
-    const isChangePassword = freshUser.changedPasswordAfter(decoded.iat);
+      const isChangePassword = freshUser.changedPasswordAfter(decoded.iat);
 
-    if (isChangePassword) return next(new AppError('', 401));
+      if (isChangePassword) return next(new AppError('', 401));
 
-    res.locals.user = freshUser;
+      res.locals.user = freshUser;
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    next();
   }
-  next();
 });
 
 export const restrictTo = (...roles: Role[]) => {

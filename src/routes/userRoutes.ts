@@ -12,6 +12,7 @@ import {
   deleteUser,
   getUserMiddleWare,
   restrictTo,
+  logout,
 } from '@/controllers';
 import { Router } from 'express';
 
@@ -19,6 +20,7 @@ const userRouter = Router();
 
 userRouter.post('/signup', signup);
 userRouter.post('/login', login);
+userRouter.get('/logout', logout);
 userRouter.post('/forgotPassword', forgotPassword);
 
 userRouter.use(protect);

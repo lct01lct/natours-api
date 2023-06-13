@@ -47,3 +47,9 @@ export interface UpdatePasswordApi {
     user: User;
   }>;
 }
+
+export interface LogoutApi {
+  res: {
+    status: 'success';
+  };
+}

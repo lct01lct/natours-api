@@ -1,4 +1,3 @@
-import { User } from '@/models';
 import { FR, FROptions, FROptionsDefault, FR_Req, FR_Res } from '../types';
 import type { NextFunction } from 'express';
 
