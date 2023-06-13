@@ -24,9 +24,9 @@ const getUser = factory.getOne(UserModel);
 const createUser = catchAsync(async (req, res) => {});
 
 const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
-  const { password, passwordConfrim } = req.body;
+  const { password, passwordConfirm } = req.body;
 
-  if (password || passwordConfrim) {
+  if (password || passwordConfirm) {
     return next(
       new AppError('This route is not for password updates. Please use updatePassword Route', 400)
     );

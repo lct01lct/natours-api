@@ -40,7 +40,7 @@ export interface UpdatePasswordApi {
   body: {
     passwordCurrent: string;
     password: string;
-    passwordConfrim: string;
+    passwordConfirm: string;
   };
   res: Res<{
     token: string;

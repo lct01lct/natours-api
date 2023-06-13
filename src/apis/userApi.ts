@@ -11,7 +11,7 @@ export interface GetAllUsersApi {
 export interface UpdateUserApi {
   body: {
     password: string;
-    passwordConfrim: string;
+    passwordConfirm: string;
     name?: string;
     email?: string;
   };

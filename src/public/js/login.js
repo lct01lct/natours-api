@@ -3,8 +3,6 @@ import { showAlert } from './alert';
 
 const login = async (email, password) => {
   try {
-    password = '$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS';
-
     const { data } = await axios({
       method: 'post',
       url: 'http://127.0.0.1:3000/api/v1/users/login',
@@ -46,9 +44,9 @@ export const initLoginPage = () => {
   const oPassword = document.getElementById('password');
   const oForm = document.querySelector('.form--login');
 
-  if (oEmail && oPassword) {
-    oEmail.value = 'admin@natours.io';
-    oPassword.value = '123456';
+  if (oForm && oEmail && oPassword) {
+    oEmail.value = 'admin@qq.com';
+    oPassword.value = '123456789';
   }
 
   oForm?.addEventListener('submit', e => {

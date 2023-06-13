@@ -134,7 +134,7 @@ export const forgotPassword = catchAsync<ForgotPasswordApi>(async (req, res, nex
   await user.save({ validateBeforeSave: false });
 
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfrim to ${resetURL}.\nIf your did't forget your password, please ignore this email!`;
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to ${resetURL}.\nIf your did't forget your password, please ignore this email!`;
 
   try {
     // await sendEmail({
@@ -184,7 +184,8 @@ export const resetPassword = catchAsync<ResetPasswordApi>(async (req, res, next)
 });
 
 export const updatePassword = catchAsync<UpdatePasswordApi>(async (req, res, next) => {
-  const { passwordCurrent, password, passwordConfrim } = req.body;
+  const { passwordCurrent, password, passwordConfirm } = req.body;
+
   const user = await UserModel.findById(req.user._id).select('+password');
   const isCorrectPassword = user.correctPassword(passwordCurrent, user.password);
 
@@ -193,7 +194,7 @@ export const updatePassword = catchAsync<UpdatePasswordApi>(async (req, res, nex
   }
 
   user.password = password;
-  user.passwordConfirm = passwordConfrim;
+  user.passwordConfirm = passwordConfirm;
 
   await user.save();
 

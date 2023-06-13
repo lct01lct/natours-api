@@ -1,16 +1,21 @@
 import axios from 'axios';
 import { showAlert } from './alert';
 
-const updateSettings = async (name, email) => {
+const updateSettings = async (data, type) => {
+  const url =
+    type === 'password'
+      ? 'http://127.0.0.1:3000/api/v1/users/updatePassword'
+      : 'http://127.0.0.1:3000/api/v1/users';
+
   try {
-    const { data } = await axios({
+    const res = await axios({
       method: 'patch',
-      url: 'http://127.0.0.1:3000/api/v1/users',
-      data: { name, email },
+      url: url,
+      data,
     });
 
-    if (data.status === 'success') {
-      showAlert('success', 'Data updated successfully!');
+    if (res.data.status === 'success') {
+      showAlert('success', `${type.toUpperCase()} updated successfully!`);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
@@ -19,14 +24,21 @@ const updateSettings = async (name, email) => {
 
 export const initAccountPage = () => {
   const oUserForm = document.querySelector('.form-user-data');
+  const oPasswordForm = document.querySelector('.form-user-password');
 
-  if (oUserForm) {
-    oUserForm.addEventListener('submit', async e => {
-      e.preventDefault();
-      const email = document.getElementById('email').value;
-      const name = document.getElementById('name').value;
+  oUserForm?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const name = document.getElementById('name').value;
 
-      await updateSettings(name, email);
-    });
-  }
+    await updateSettings({ name, email }, 'data');
+  });
+
+  oPasswordForm?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const passwordCurrent = document.getElementById('password-current').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password-confirm').value;
+    await updateSettings({ password, passwordConfirm, passwordCurrent }, 'password');
+  });
 };
