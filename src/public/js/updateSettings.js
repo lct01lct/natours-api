@@ -36,9 +36,16 @@ export const initAccountPage = () => {
 
   oPasswordForm?.addEventListener('submit', async e => {
     e.preventDefault();
+
+    document.querySelector('.btn--save-password ').innerHTML = 'Updating...';
     const passwordCurrent = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
     await updateSettings({ password, passwordConfirm, passwordCurrent }, 'password');
+
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
+    document.querySelector('.btn--save-password ').innerHTML = 'Save password';
   });
 };
