@@ -9,7 +9,7 @@ export const errorHandler = (err: AppError, req: FR_Req, res: FR_Res<null>, next
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else {
     let _err: any = err;
     let error: AppError;
@@ -19,35 +19,57 @@ export const errorHandler = (err: AppError, req: FR_Req, res: FR_Res<null>, next
     if (_err.name === 'ValidationError') error = handleValidationErrorDB(_err);
     if (_err.name === 'JsonWebTokenError') error = handleJsonWebTokenError(_err);
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
 
-const sendErrorDev = (err: AppError, res: FR_Res<null>) => {
+const sendErrorDev = (err: AppError, req: FR_Req, res: FR_Res<null>) => {
   const { status, message, stack } = err;
-
-  res.status(err.statusCode).json({
-    status,
-    message,
-    error: err,
-    stack,
-  });
-};
-
-const sendErrorProd = (err: AppError, res: FR_Res<null>) => {
-  const { status, message, isOperational } = err;
-  if (isOperational) {
+  logger.error(`Error: ${err}`);
+  if (req.originalUrl.startsWith('/api')) {
     res.status(err.statusCode).json({
       status,
       message,
+      error: err,
+      stack,
     });
   } else {
-    logger.error(`Error: ${err}`);
-    res.status(500).json({
-      status: 'error',
-      message: 'Something went very wrong!',
+    res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: message,
     });
   }
+};
+
+const sendErrorProd = (err: AppError, req: FR_Req, res: FR_Res<null>) => {
+  const { status, message, isOperational } = err;
+  if (req.originalUrl.startsWith('/api')) {
+    if (isOperational) {
+      return res.status(err.statusCode).json({
+        status,
+        message,
+      });
+    } else {
+      logger.error(`Error: ${err}`);
+      return res.status(500).json({
+        status: 'error',
+        message: 'Something went very wrong!',
+      });
+    }
+  }
+
+  if (isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrong!',
+      msg: message,
+    });
+  }
+
+  logger.error(`Error: ${err}`);
+  return res.status(500).json({
+    status: 'error',
+    message: 'Please try again later.',
+  });
 };
 
 const handleCastErrorDB = (err: CastError) => {

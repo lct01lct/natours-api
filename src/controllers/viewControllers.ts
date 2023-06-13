@@ -1,5 +1,5 @@
 import { TourModel } from '@/models';
-import { catchAsync } from '@/utils';
+import { AppError, catchAsync } from '@/utils';
 
 export const getIndexPage = catchAsync(async (req, res) => {
   res.status(200).render('base', {
@@ -17,11 +17,13 @@ export const getOverviewPage = catchAsync(async (req, res) => {
   });
 });
 
-export const getTourPage = catchAsync<{ params: { slug: string } }>(async (req, res) => {
+export const getTourPage = catchAsync<{ params: { slug: string } }>(async (req, res, next) => {
   const tour = await TourModel.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
     select: 'review rating user',
   });
+
+  if (!tour) return next(new AppError('There is no tour with that name', 404));
 
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
