@@ -106,7 +106,7 @@ export const isLoggedIn = catchAsync(async (req, res, next) => {
       res.locals.user = freshUser;
     }
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   } finally {
     next();
   }

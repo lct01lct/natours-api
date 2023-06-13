@@ -46,7 +46,7 @@ const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
   });
 });
 
-const deleteUser = catchAsync<DeleteUserApi>(async (req, res, next) => {
+const deleteUser = catchAsync<DeleteUserApi>(async (req, res) => {
   await UserModel.findByIdAndDelete(req.user._id, { active: false });
 
   res.status(204).json({

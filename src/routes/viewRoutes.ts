@@ -11,14 +11,13 @@ import { Router } from 'express';
 
 const viewRouter = Router();
 
+// Deprecated: for form action
 viewRouter.get('/me', protect, getAccountPage);
 
-viewRouter.use(isLoggedIn);
-
-viewRouter.get('/', getOverviewPage);
-viewRouter.get('/overview', getOverviewPage);
-viewRouter.get('/tour/:slug', protect, getTourPage);
-viewRouter.get('/login', getLoginPage);
+viewRouter.get('/', isLoggedIn, getOverviewPage);
+viewRouter.get('/overview', isLoggedIn, getOverviewPage);
+viewRouter.get('/tour/:slug', isLoggedIn, protect, getTourPage);
+viewRouter.get('/login', isLoggedIn, getLoginPage);
 
 viewRouter.post('/submit-user-data', protect, updateUserData);
 
