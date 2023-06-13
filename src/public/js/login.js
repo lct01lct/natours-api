@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { showAlert } from './alert';
+
 const login = async (email, password) => {
   try {
     password = '$2a$12$Q0grHjH9PXc6SxivC8m12.2mZJ9BbKcgFpwSG4Y1ZEII8HJVzWeyS';
@@ -12,23 +15,33 @@ const login = async (email, password) => {
     });
 
     if (data.status === 'success') {
-      location.assign('/');
+      showAlert('success', 'Logged in successfully');
+      setTimeout(() => {
+        location.assign('/');
+      }, 1000);
     }
   } catch (err) {
-    alert(err.response.data.message);
+    showAlert('error', err);
+    console.log(err);
   }
 };
 
-if (document.getElementById('email') && document.getElementById('password')) {
-  document.getElementById('email').value = 'admin@natours.io';
-  document.getElementById('password').value = '123456';
-}
+export const initLoginPage = () => {
+  const oEmail = document.getElementById('email');
+  const oPassword = document.getElementById('password');
+  const oForm = document.querySelector('.form');
 
-document.querySelector('.form')?.addEventListener('submit', e => {
-  e.preventDefault();
+  if (oEmail && oPassword) {
+    oEmail.value = 'admin@natours.io';
+    oPassword.value = '123456';
+  }
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  oForm?.addEventListener('submit', e => {
+    e.preventDefault();
 
-  login(email, password);
-});
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    login(email, password);
+  });
+};

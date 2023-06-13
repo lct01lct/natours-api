@@ -9,7 +9,9 @@
     "import-data": "pnpm data  --import",
     "delete-data": "pnpm data --delete ",
     "build": "tsc && tsc-alias",
-    "preview": "node ./dist/server.js"
+    "preview": "node ./dist/server.js",
+    "watch:js": "parcel watch ./src/public/js/index.js --out-dir ./src/public/js --out-file bundle.js",
+    "build:js": "parcel watch ./src/public/js/index.js --out-dir ./src/public/js --out-file bundle.js"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +37,8 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
