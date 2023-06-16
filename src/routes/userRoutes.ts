@@ -13,6 +13,7 @@ import {
   getUserMiddleWare,
   restrictTo,
   logout,
+  uploadPhoto,
 } from '@/controllers';
 import { Router } from 'express';
 
@@ -30,7 +31,12 @@ userRouter.patch('/updatePassword', updatePassword);
 
 userRouter.use(restrictTo('admin'));
 
-userRouter.route('/').get(getAllUsers).post(createUser).patch(updateUser).delete(deleteUser);
+userRouter
+  .route('/')
+  .get(getAllUsers)
+  .post(createUser)
+  .patch(uploadPhoto, updateUser)
+  .delete(deleteUser);
 
 userRouter.route('/:id').get(getUserMiddleWare, getUser);
 
