@@ -1,7 +1,7 @@
 import { LIMIT_FIELDS, LimitFields } from '../types';
 import { Query } from 'mongoose';
 
-class APIFeatures<T extends Query<any, any>, K extends LimitFields> {
+class APIFeatures<T extends Query<any, any, {}, any, 'find'>, K extends LimitFields> {
   constructor(public query: T, private queryString: K) {}
 
   filter() {
@@ -30,9 +30,9 @@ class APIFeatures<T extends Query<any, any>, K extends LimitFields> {
   limitFields() {
     if (this.queryString['fields']) {
       const fields = this.queryString['fields'].split(',').join(' ');
-      this.query = this.query.select(fields);
+      this.query = this.query.select(fields) as T;
     } else {
-      this.query = this.query.select('-__v'); // exclude __v
+      this.query = this.query.select('-__v') as T; // exclude __v
     }
 
     return this;

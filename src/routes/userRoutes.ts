@@ -14,6 +14,7 @@ import {
   restrictTo,
   logout,
   uploadPhoto,
+  rsizePhoto,
 } from '@/controllers';
 import { Router } from 'express';
 
@@ -34,8 +35,7 @@ userRouter.use(restrictTo('admin'));
 userRouter
   .route('/')
   .get(getAllUsers)
-  .post(createUser)
-  .patch(uploadPhoto, updateUser)
+  .patch(uploadPhoto, rsizePhoto, updateUser)
   .delete(deleteUser);
 
 userRouter.route('/:id').get(getUserMiddleWare, getUser);

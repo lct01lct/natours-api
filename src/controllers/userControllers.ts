@@ -3,7 +3,9 @@ import { AppError, catchAsync } from '@/utils';
 import { GetAllUsersApi, UpdateUserApi, DeleteUserApi } from '@/apis';
 import * as factory from './handlerFactory';
 import multer from 'multer';
-import { FR_Req } from '@/types';
+import sharp from 'sharp';
+import { existsSync, unlinkSync } from 'fs';
+import { join } from 'path';
 
 export const getAllUsers = catchAsync<GetAllUsersApi>(async (req, res) => {
   const users = await UserModel.find();
@@ -26,8 +28,6 @@ export const getUser = factory.getOne(UserModel);
 export const createUser = catchAsync(async (req, res) => {});
 
 export const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
-  console.log(req.body);
-  console.log(req.file);
   const { password, passwordConfirm } = req.body;
 
   if (password || passwordConfirm) {
@@ -38,6 +38,15 @@ export const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
 
   const filteredBody: Record<string, any> = filterObj(req.body, 'name', 'email');
   if (req.file) filteredBody.photo = req.file.filename;
+
+  if (req.file.filename) {
+    const user = await UserModel.findById(req.user._id);
+    const originPhotoPath = join(__dirname, `../public/img/users/${user.photo}`);
+    if (user.photo !== 'default.jpg' && existsSync(originPhotoPath)) {
+      unlinkSync(originPhotoPath);
+    }
+  }
+
   const newUser = await UserModel.findByIdAndUpdate(req.user._id, filteredBody, {
     new: true,
     runValidators: true,
@@ -70,15 +79,16 @@ function filterObj<Obj extends object, F extends keyof Obj>(obj: Obj, ...allowFi
 }
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'src/public/img/users');
-    },
-    filename: (req: FR_Req, file, cb) => {
-      const ext = file.mimetype.split('/')[1];
-      cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-    },
-  }),
+  // storage: multer.diskStorage({
+  //   destination: (req, file, cb) => {
+  //     cb(null, 'src/public/img/users');
+  //   },
+  //   filename: (req: FR_Req, file, cb) => {
+  //     const ext = file.mimetype.split('/')[1];
+  //     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+  //   },
+  // }),
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
       cb(null, true);
@@ -89,3 +99,13 @@ const upload = multer({
 });
 
 export const uploadPhoto = upload.single('photo');
+export const rsizePhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpg`;
+  const path = join(__dirname, `../public/img/users/${req.file.filename}`);
+
+  sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').toFile(path);
+
+  next();
+});

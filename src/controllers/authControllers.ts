@@ -130,7 +130,7 @@ export const forgotPassword = catchAsync<ForgotPasswordApi>(async (req, res, nex
   }
 
   const resetToken = user.createPasswordResetToken();
-  console.log(resetToken);
+
   await user.save({ validateBeforeSave: false });
 
   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
