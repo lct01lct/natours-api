@@ -37,9 +37,9 @@ export const updateUser = catchAsync<UpdateUserApi>(async (req, res, next) => {
   }
 
   const filteredBody: Record<string, any> = filterObj(req.body, 'name', 'email');
-  if (req.file) filteredBody.photo = req.file.filename;
+  if (req.file) filteredBody.photo = req.file?.filename;
 
-  if (req.file.filename) {
+  if (req.file?.filename) {
     const user = await UserModel.findById(req.user._id);
     const originPhotoPath = join(__dirname, `../public/img/users/${user.photo}`);
     if (user.photo !== 'default.jpg' && existsSync(originPhotoPath)) {
