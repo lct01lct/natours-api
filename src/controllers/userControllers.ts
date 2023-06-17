@@ -98,14 +98,14 @@ const upload = multer({
   },
 });
 
-export const uploadPhoto = upload.single('photo');
+export const uploadUserPhoto = upload.single('photo');
 export const rsizePhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpg`;
   const path = join(__dirname, `../public/img/users/${req.file.filename}`);
 
-  sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').toFile(path);
+  await sharp(req.file.buffer).resize(500, 500).toFormat('jpeg').toFile(path);
 
   next();
 });

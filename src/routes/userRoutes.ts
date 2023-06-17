@@ -13,7 +13,7 @@ import {
   getUserMiddleWare,
   restrictTo,
   logout,
-  uploadPhoto,
+  uploadUserPhoto,
   rsizePhoto,
 } from '@/controllers';
 import { Router } from 'express';
@@ -35,7 +35,7 @@ userRouter.use(restrictTo('admin'));
 userRouter
   .route('/')
   .get(getAllUsers)
-  .patch(uploadPhoto, rsizePhoto, updateUser)
+  .patch(uploadUserPhoto, rsizePhoto, updateUser)
   .delete(deleteUser);
 
 userRouter.route('/:id').get(getUserMiddleWare, getUser);
